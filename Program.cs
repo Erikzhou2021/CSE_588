@@ -2,8 +2,12 @@
 using System.Text.Json;
 using RobloxFiles;
 using System.ComponentModel;
+using System;
+using System.IO;
 using System.Text;
+using System.Net;
 
+//robloxTest.Scraper.parseFile();
 await robloxTest.Scraper.Main();
 
 namespace robloxTest
@@ -45,7 +49,8 @@ namespace robloxTest
     {
         public static async Task Main()
         {
-            HttpClient client = new HttpClient();
+            var clientHandler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
+            HttpClient client = new HttpClient(clientHandler);
 
             try
             {
@@ -68,25 +73,16 @@ namespace robloxTest
                     {
                         string downloadLink = await client.GetStringAsync("https://assetdelivery.roblox.com/v2/assetId/" + asset.asset.id.ToString());
                         downloadLink = JsonSerializer.Deserialize<DownloadLink>(downloadLink).locations[0].location;
-                        // Stream fileStream = await client.GetStreamAsync(downloadLink);
-                        string filestring = await client.GetStringAsync(downloadLink);
-                        byte[] byteArray = Encoding.UTF8.GetBytes(filestring);
-                        Console.WriteLine(await client.GetStringAsync(downloadLink));
-                        try
-                        {
-                            RobloxFile file = RobloxFile.Open(byteArray);
-                            foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(file))
-                            {
-                                string name = descriptor.Name;
-                                object value = descriptor.GetValue(file);
-                                Console.WriteLine("{0}={1}", name, value);
-                                return;
-                            }
-                        }
-                        catch (Exception e){
-                            Console.WriteLine(e.Message);
-                            continue;
-                        }
+                        //Stream fileStream = await client.GetStreamAsync(downloadLink);
+
+                        //var bytes = await client.GetByteArrayAsync(downloadLink);
+                        //string response = await client.GetStringAsync(downloadLink);
+
+                        byte[] bytes = await client.GetByteArrayAsync("https://assetdelivery.roblox.com/v1/asset/?id="+ asset.asset.id.ToString());
+                        //string plaintext = await client.GetStringAsync("https://assetdelivery.roblox.com/v1/asset/?id=" + asset.asset.id.ToString());
+                        //Console.WriteLine(plaintext);
+                        //File.WriteAllBytes("temp.rbxm", bytes);
+                        Scraper.parseFile(bytes);
                     }
                 }
             }
@@ -94,6 +90,26 @@ namespace robloxTest
             {
                 Console.WriteLine("\nException Caught!");
                 Console.WriteLine("Message :{0} ", e.Message);
+            }
+        }
+        public static void parseFile(byte[] bytes)
+        {
+            try
+            {
+                RobloxFile file = RobloxFile.Open(bytes);
+                //RobloxFile file = RobloxFile.Open(fileStream);
+                //RobloxFile file = RobloxFile.Open("temp.rbxm");
+                foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(file))
+                {
+                    string name = descriptor.Name;
+                    object value = descriptor.GetValue(file);
+                    Console.WriteLine("{0}={1}", name, value);
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
     }
