@@ -3,6 +3,7 @@ using System.Text.Json;
 using RobloxFiles;
 using System.ComponentModel;
 using System.Text;
+using System.Runtime;
 
 await robloxTest.Scraper.Main();
 
@@ -93,13 +94,7 @@ namespace robloxTest
                             }
                             
                             // Stream fileStream = await client.GetStreamAsync(downloadLink);
-                            string filestring = await client.GetStringAsync(response.locations[0].location);
                             byte[] byteArray = await client.GetByteArrayAsync(response.locations[0].location);
-                            // Console.WriteLine(filestring);
-                            //byte[] byteArray = Encoding.UTF7.GetBytes(filestring);
-                            // Console.WriteLine();
-                            // Console.WriteLine(byteArray);
-                            //Console.WriteLine(await client.GetStringAsync(downloadLink));
                             try
                             {
                                 RobloxFile file = RobloxFile.Open(byteArray);
@@ -110,13 +105,29 @@ namespace robloxTest
                                 else 
                                     Console.WriteLine("xml format");
                                 s++;
-                                // foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(file))
-                                // {
-                                //     string name = descriptor.Name;
-                                //     object value = descriptor.GetValue(file);
-                                //     //Console.WriteLine("{0}={1}", name, value);
-                                //     return;
-                                // }
+                                
+
+                                var workspace = file.FindFirstChildOfClass<Workspace>();
+                                if (workspace == null) {
+                                    Console.WriteLine("No WORKSPACE?");
+                                }
+
+                                foreach (Instance inst in workspace.GetDescendants()) {
+                                    var instPath = inst.GetFullName();
+                                    Console.WriteLine($"path: {instPath}");
+                                    var props = inst.Properties;
+                                    foreach (var prop in props)
+                                    {
+                                        Property binding = prop.Value;
+                                        var content = binding.CastValue<RobloxFiles.DataTypes.Content>();
+
+                                        if (content != null)
+                                        {
+                                            Console.WriteLine($"Content: {content}");
+                                        }
+                                    }
+                                }
+
                             }
                             catch (Exception e){
                                 Console.WriteLine($"stream failed: {e.Message}");
