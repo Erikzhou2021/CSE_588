@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Text.Json;
 using RobloxFiles;
+using RobloxFiles.DataTypes;
 using System.ComponentModel;
 using System.Text;
 using System.Runtime;
@@ -109,42 +110,34 @@ namespace robloxTest
                                 s++;
                                 
 
-                                var workspace = file.FindFirstChildOfClass<Workspace>();
-                                if (workspace == null) {
-                                    Console.WriteLine("No WORKSPACE?");
-                                }
+                               foreach (var obj in file.GetDescendants()) {
+                                    if (obj.ClassName == "Script" || obj.ClassName == "ModuleScript") {
+                                        Property source = obj.GetProperty("Source");
+                                        ProtectedString sourceValue = source.Value as ProtectedString;
+                                        string sourceString = sourceValue.ToString();
 
-                                foreach (Instance inst in workspace.GetDescendants()) {
-                                    var instPath = inst.GetFullName();
-                                    Console.WriteLine($"path: {instPath}");
-                                    var props = inst.Properties;
-                                    foreach (var prop in props)
-                                    {
-                                        Property binding = prop.Value;
-                                        var content = binding.CastValue<RobloxFiles.DataTypes.Content>();
-
-                                        if (content != null)
-                                        {
-                                            Console.WriteLine($"Content: {content}");
-                                        }
+                                        Console.WriteLine($"Model: {asset.asset.id}, has script: {obj.Name}");
+                                        Console.WriteLine(sourceString);
                                     }
-                                }
+                               }
+                               return;
 
                             }
                             catch (Exception e){
                                 Console.WriteLine($"stream failed: {e.Message}");
                             }
 
-                            try {
-                                string tempFilePath = Path.Combine(Path.GetTempPath(), "tempFile.rbxm");
-                                await File.WriteAllBytesAsync(tempFilePath, byteArray);
-                                RobloxFile file = RobloxFile.Open(tempFilePath);
-                                Console.WriteLine("File Success!");
-                            }
-                            catch (Exception e){
-                                Console.WriteLine($"file format failed: {e.Message}");
-                                continue;
-                            }
+                            // this seems to work the same as the stream format 
+                            // try {
+                            //     string tempFilePath = Path.Combine(Path.GetTempPath(), "tempFile.rbxm");
+                            //     await File.WriteAllBytesAsync(tempFilePath, byteArray);
+                            //     RobloxFile file = RobloxFile.Open(tempFilePath);
+                            //     Console.WriteLine("File Success!");
+                            // }
+                            // catch (Exception e){
+                            //     Console.WriteLine($"file format failed: {e.Message}");
+                            //     continue;
+                            // }
 
                             
                         }
