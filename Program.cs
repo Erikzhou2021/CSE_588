@@ -4,6 +4,7 @@ using RobloxFiles;
 using System.ComponentModel;
 using System.Text;
 using System.Runtime;
+using System.Net;
 
 await robloxTest.Scraper.Main();
 
@@ -52,7 +53,8 @@ namespace robloxTest
     {
         public static async Task Main()
         {
-            HttpClient client = new HttpClient();
+            var clientHandler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
+            HttpClient client = new HttpClient(clientHandler);
             int p = 0;
             int s = 0;
             int total = 0;
