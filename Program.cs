@@ -59,11 +59,12 @@ namespace robloxTest
             int p = 0;
             int s = 0;
             int total = 0;
+            string keyword = "christmas";
 
             try
             {
                 while (p < 10) {
-                    string responseBody = await client.GetStringAsync($"https://apis.roblox.com/toolbox-service/v1/marketplace/10?limit=100&pageNumber={p}");
+                    string responseBody = await client.GetStringAsync($"https://apis.roblox.com/toolbox-service/v1/marketplace/10?limit=100&pageNumber={p}&keyword={keyword}");
                     //await using Stream stream = await client.GetStreamAsync("https://apis.roblox.com/toolbox-service/v1/marketplace/10");
                     //MarketplacePage page = await JsonSerializer.DeserializeAsync<MarketplacePage>(stream);
 
@@ -81,7 +82,7 @@ namespace robloxTest
                         if (asset.asset.hasScripts)
                         {
                             total++;
-                            Console.WriteLine("{0}", asset.asset.id);
+                            //Console.WriteLine("{0}", asset.asset.id);
                             string downloadLink = await client.GetStringAsync("https://assetdelivery.roblox.com/v2/assetId/" + asset.asset.id.ToString());
 
 
@@ -101,12 +102,12 @@ namespace robloxTest
                             try
                             {
                                 RobloxFile file = RobloxFile.Open(byteArray);
-                                Console.WriteLine("Stream Success!");
-                                if (file is BinaryRobloxFile) {
-                                    Console.WriteLine("binary format");
-                                }
-                                else 
-                                    Console.WriteLine("xml format");
+                                // //Console.WriteLine("Stream Success!");
+                                // if (file is BinaryRobloxFile) {
+                                //     //Console.WriteLine("binary format");
+                                // }
+                                // else 
+                                //     //Console.WriteLine("xml format");
                                 s++;
                                 
 
@@ -116,11 +117,38 @@ namespace robloxTest
                                         ProtectedString sourceValue = source.Value as ProtectedString;
                                         string sourceString = sourceValue.ToString();
 
-                                        Console.WriteLine($"Model: {asset.asset.id}, has script: {obj.Name}");
-                                        Console.WriteLine(sourceString);
+                                        // Console.WriteLine($"Model: {asset.asset.id}, has script: {obj.Name}");
+                                        // Console.WriteLine(sourceString);
+                                        if (sourceString.Contains("require")) {
+                                            string[] lines = sourceString.Split('\n');
+                                            List<(int, string)> reqLines = new List<(int, string)>();
+
+                                            for (int i = 0; i < lines.Length; i++) {
+                                                if (lines[i].Contains("require")) {
+                                                    reqLines.Add((i + 1, lines[i])); 
+                                                }
+                                            }
+
+                                            Console.ForegroundColor = ConsoleColor.Green;
+                                            Console.WriteLine($"Model {asset.asset.id} with script {obj.Name}:");
+
+                                            foreach (var x in reqLines) {
+                                                if (x.Item2.Contains("MaterialService") || x.Item2.Contains("JointsService") || x.Item2.Contains("nil")) {
+                                                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                                                    Console.WriteLine($"Contains very sus 'require' on line {x.Item1}");
+                                                }
+                                                else {
+                                                    Console.ForegroundColor = ConsoleColor.Yellow;
+                                                    Console.WriteLine($"contains 'require' on line {x.Item1}");
+                                                }
+                                            }
+
+                                            Console.WriteLine();
+
+                                        }
                                     }
                                }
-                               return;
+                               //return; 
 
                             }
                             catch (Exception e){
