@@ -59,14 +59,13 @@ namespace robloxTest
             int p = 0;
             int s = 0;
             int total = 0;
-            string keyword = "christmas";
-
-            try
+            string [] keywords = {"patrick", "easter", "christmas", "halloween"};
+            foreach (string keyword in keywords) {
+                Console.WriteLine(keyword.ToUpper());
+                try
             {
                 while (p < 10) {
                     string responseBody = await client.GetStringAsync($"https://apis.roblox.com/toolbox-service/v1/marketplace/10?limit=100&pageNumber={p}&keyword={keyword}");
-                    //await using Stream stream = await client.GetStreamAsync("https://apis.roblox.com/toolbox-service/v1/marketplace/10");
-                    //MarketplacePage page = await JsonSerializer.DeserializeAsync<MarketplacePage>(stream);
 
                     MarketplacePage page = JsonSerializer.Deserialize<MarketplacePage>(responseBody);
                     List<long> ids = new List<long>();
@@ -82,7 +81,6 @@ namespace robloxTest
                         if (asset.asset.hasScripts)
                         {
                             total++;
-                            //Console.WriteLine("{0}", asset.asset.id);
                             string downloadLink = await client.GetStringAsync("https://assetdelivery.roblox.com/v2/assetId/" + asset.asset.id.ToString());
 
 
@@ -102,14 +100,8 @@ namespace robloxTest
                             try
                             {
                                 RobloxFile file = RobloxFile.Open(byteArray);
-                                // //Console.WriteLine("Stream Success!");
-                                // if (file is BinaryRobloxFile) {
-                                //     //Console.WriteLine("binary format");
-                                // }
-                                // else 
-                                //     //Console.WriteLine("xml format");
                                 s++;
-                                
+                                bool susted = false;
 
                                foreach (var obj in file.GetDescendants()) {
                                     if (obj.ClassName == "Script" || obj.ClassName == "ModuleScript") {
@@ -117,11 +109,19 @@ namespace robloxTest
                                         ProtectedString sourceValue = source.Value as ProtectedString;
                                         string sourceString = sourceValue.ToString();
 
-                                        // Console.WriteLine($"Model: {asset.asset.id}, has script: {obj.Name}");
-                                        // Console.WriteLine(sourceString);
+                                        string[] lines = sourceString.Split('\n');
+                                        List<(int, string)> reqLines = new List<(int, string)>();
+                                        
+                                        // Could multi-thread this but we're already getting rate limited so..
+                                        // requires check
                                         if (sourceString.Contains("require")) {
-                                            string[] lines = sourceString.Split('\n');
-                                            List<(int, string)> reqLines = new List<(int, string)>();
+
+                                            // weld script check
+                                            if (obj.Name.ToLower().Contains("weld")) {
+                                                susted = true;
+                                                Console.WriteLine($"Model {asset.asset.id} with script {obj.Name}:");
+                                                Console.WriteLine($"has requires in weld script");
+                                            }
 
                                             for (int i = 0; i < lines.Length; i++) {
                                                 if (lines[i].Contains("require")) {
@@ -129,58 +129,72 @@ namespace robloxTest
                                                 }
                                             }
 
-                                            Console.ForegroundColor = ConsoleColor.Green;
-                                            Console.WriteLine($"Model {asset.asset.id} with script {obj.Name}:");
-
                                             foreach (var x in reqLines) {
-                                                if (x.Item2.Contains("MaterialService") || x.Item2.Contains("JointsService") || x.Item2.Contains("nil")) {
-                                                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                                                    Console.WriteLine($"Contains very sus 'require' on line {x.Item1}");
-                                                }
-                                                else {
-                                                    Console.ForegroundColor = ConsoleColor.Yellow;
-                                                    Console.WriteLine($"contains 'require' on line {x.Item1}");
+                                                if (x.Item2.Contains("MaterialService") || x.Item2.Contains("JointsService") || x.Item2.Contains("nil") 
+                                                    || x.Item2.Contains("+") || x.Item2.Contains("tonumber")) {
+                                                    susted = true;
+                                                    Console.WriteLine($"Model {asset.asset.id} with script {obj.Name}:");
+                                                    Console.WriteLine($"on line {x.Item1} Contains very sus 'require': {x.Item2}");
                                                 }
                                             }
+                                        }
 
-                                            Console.WriteLine();
+                                        // roblox faker check
+                                        if (sourceString.Contains("OFFICIAL ROBLOX")) {
+                                            susted = true;
+                                            Console.WriteLine($"Model {asset.asset.id} with script {obj.Name}:");
+                                            Console.WriteLine($"has OFFICIAL ROBLOX in it");
+                                        }
 
+                                        // circumvention check
+                                        if (sourceString.Contains("game[\"Run Service\"]:IsStudio()") || sourceString.Contains(":IsStudio()")) {
+                                            susted = true;
+                                            Console.WriteLine($"Model {asset.asset.id} with script {obj.Name}:");
+                                            Console.WriteLine($"Checks for IsStudio");
+                                        }
+
+                                        // lines check
+                                        if (lines.Length > 8000) {
+                                            susted = true;
+                                            Console.WriteLine($"Model {asset.asset.id} with script {obj.Name}:");
+                                            Console.WriteLine("Has a suspicious number of lines");
+                                        }
+
+                                        foreach (string l in lines) {
+                                            if (l.Length > 500) {
+                                                susted = true;
+                                                Console.WriteLine($"Model {asset.asset.id} with script {obj.Name}:");
+                                                Console.WriteLine("Has a suspiciously long line");
+                                            } 
                                         }
                                     }
                                }
-                               //return; 
+                               if (susted) {
+                                Console.WriteLine("\n");
+                               }
 
                             }
                             catch (Exception e){
                                 Console.WriteLine($"stream failed: {e.Message}");
-                            }
-
-                            // this seems to work the same as the stream format 
-                            // try {
-                            //     string tempFilePath = Path.Combine(Path.GetTempPath(), "tempFile.rbxm");
-                            //     await File.WriteAllBytesAsync(tempFilePath, byteArray);
-                            //     RobloxFile file = RobloxFile.Open(tempFilePath);
-                            //     Console.WriteLine("File Success!");
-                            // }
-                            // catch (Exception e){
-                            //     Console.WriteLine($"file format failed: {e.Message}");
-                            //     continue;
-                            // }
-
-                            
-                        }
-                        else {
-                            //Console.WriteLine("No scripts");
+                            }       
                         }
                     }
                     p++;
                 }
             }
+            catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.TooManyRequests)
+            {
+                Console.WriteLine($"429 Too Many Requests - Waiting {30} seconds...");
+                await Task.Delay(30_000);
+            }
             catch (HttpRequestException e)
             {
                 Console.WriteLine("\nException Caught!");
                 Console.WriteLine("Message :{0} ", e.Message);
+                
             }
+            }
+            
 
             Console.WriteLine($"Successes: {s}, Total: {total}");
         }
