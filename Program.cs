@@ -166,7 +166,7 @@ namespace robloxTest
                                             if (lines[i].Length > 500) {
                                                 susted = true;
                                                 Console.WriteLine($"Model {asset.asset.id} with script {obj.Name}:");
-                                                Console.WriteLine($"Has a suspiciously long line on line {i + 1}");
+                                                Console.WriteLine($"Has a suspiciously long line on line {i + 1}: {lines[i]}");
                                                 break;
                                             } 
                                         }
