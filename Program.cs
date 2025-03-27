@@ -59,7 +59,7 @@ namespace robloxTest
             int p = 0;
             int s = 0;
             int total = 0;
-            string [] keywords = {"patrick", "easter", "christmas", "halloween"};
+            string [] keywords = {"patrick", "easter", "christmas", "halloween", "fortnite", "tuah"};
             foreach (string keyword in keywords) {
                 Console.WriteLine(keyword.ToUpper());
                 try
@@ -160,11 +160,14 @@ namespace robloxTest
                                             Console.WriteLine("Has a suspicious number of lines");
                                         }
 
-                                        foreach (string l in lines) {
-                                            if (l.Length > 500) {
+
+
+                                        for (int i = 0; i < lines.Length; i++) {
+                                            if (lines[i].Length > 500) {
                                                 susted = true;
                                                 Console.WriteLine($"Model {asset.asset.id} with script {obj.Name}:");
-                                                Console.WriteLine("Has a suspiciously long line");
+                                                Console.WriteLine($"Has a suspiciously long line on line {i + 1}");
+                                                break;
                                             } 
                                         }
                                     }
