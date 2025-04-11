@@ -42,7 +42,7 @@ namespace robloxTest
     }
     public struct DownloadLinkError
     {
-        public string code { get; set; }
+        public int code { get; set; }
         public string message { get; set; }
     }
     public struct DownloadLink
@@ -59,13 +59,22 @@ namespace robloxTest
             int p = 0;
             int s = 0;
             int total = 0;
-            string [] keywords = {"patrick", "easter", "christmas", "halloween", "fortnite", "tuah"};
+            string[] keywords = {
+                "patrick", "easter", "christmas", "halloween", "fortnite", "tuah",
+                "sword", "gun", "car", "tank", "zombie", "pet", "obby", "simulator", "tycoon",
+                "admin", "morph", "house", "castle", "city", "forest", "lava", "portal", 
+                "police", "fire", "dragon", "spaceship", "boat", "plane", "helicopter", 
+                "explosion", "magic", "dance", "animation", "script", "kit", "ui", "gui", 
+                "button", "teleport", "tool", "swordfight", "camera", "ragdoll", "vehicle", 
+                "trap", "badge", "checkpoint", "money", "gamepass", "boss", "npc", "alien", 
+                "ghost", "haunted", "prison"
+            };
             foreach (string keyword in keywords) {
                 Console.WriteLine(keyword.ToUpper());
                 try
             {
                 while (p < 10) {
-                    string responseBody = await client.GetStringAsync($"https://apis.roblox.com/toolbox-service/v1/marketplace/10?limit=100&pageNumber={p}&keyword={keyword}");
+                    string responseBody = await client.GetStringAsync($"https://apis.roblox.com/toolbox-service/v1/marketplace/10?limit=100&pageNumber={p}");
 
                     MarketplacePage page = JsonSerializer.Deserialize<MarketplacePage>(responseBody);
                     List<long> ids = new List<long>();
@@ -82,16 +91,15 @@ namespace robloxTest
                         {
                             total++;
                             string downloadLink = await client.GetStringAsync("https://assetdelivery.roblox.com/v2/assetId/" + asset.asset.id.ToString());
-
-
+                            Console.WriteLine(downloadLink);
                             var response = JsonSerializer.Deserialize<DownloadLink>(downloadLink);
                             // need to error check in case we get paywalled
                             if (response.errors != null)
                             {
-                                foreach (var error in response.errors)
-                                {
-                                    Console.WriteLine($"Error for asset {asset.asset.id}: {error.message}");
-                                }
+                                // foreach (var error in response.errors)
+                                // {
+                                //     Console.WriteLine($"Error for asset {asset.asset.id}: {error.message}");
+                                // }
                                 continue;
                             }
                             
