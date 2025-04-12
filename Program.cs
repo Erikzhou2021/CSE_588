@@ -52,7 +52,7 @@ namespace robloxTest
     }
     public struct DownloadLink
     {
-        public List<DownloadLinkData>? locations { get; set; }
+        public string? location { get; set; }
         public List<DownloadLinkError>? errors { get; set; }
     }
     public class Scraper
@@ -123,11 +123,11 @@ namespace robloxTest
 
         public async Task checkAsset(long assetId){
             string api_key = "0EGOJlVXckqHCdPk2N1yiD835QGOArfgjtMd8oXFW7m0P0bqZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNkluTnBaeTB5TURJeExUQTNMVEV6VkRFNE9qVXhPalE1V2lJc0luUjVjQ0k2SWtwWFZDSjkuZXlKaVlYTmxRWEJwUzJWNUlqb2lNRVZIVDBwc1ZsaGphM0ZJUTJSUWF6Sk9NWGxwUkRnek5WRkhUMEZ5Wm1kcWRFMWtPRzlZUmxjM2JUQlFNR0p4SWl3aWIzZHVaWEpKWkNJNklqUTVNakV3T0RnME9EVWlMQ0poZFdRaU9pSlNiMkpzYjNoSmJuUmxjbTVoYkNJc0ltbHpjeUk2SWtOc2IzVmtRWFYwYUdWdWRHbGpZWFJwYjI1VFpYSjJhV05sSWl3aVpYaHdJam94TnpRME5ERTBOemMxTENKcFlYUWlPakUzTkRRME1URXhOelVzSW01aVppSTZNVGMwTkRReE1URTNOWDAuRC1TaGNRdUJCdUFFczdQd3FyZE1Ia2ZRTnlvaDZXY1pqcTNNMXdKeENPNGF5TTBOLVkwVDZLTV9JYlhxR2VPTFpjeWRWR05PTTB0XzBSc2o2eldSUXp0Ui1DcEgwMklzdlNWZzdYR3FYTFlaLU8xci04Qkx6X1NVRDhHQmNId1RJOFlZMlB4NmpmNGRzX2dlLWZMUDFZNEczelhrbGtHME13N3Zfd1pxVlFXLU5fbVFSNzJ6eTFYYXhSTHpYNXpaMGU3RWI4TEN4ZnNPeTFmSFNTRTRNQVNKX1VDREs1T1pkYldXZUgzVlgyaGwza0p5RFhHMG1EMmhsZkhTd09GMzVUckZXSlotVXlMX3dvV2hTdExiMDhnRzhYLVZDejViVlhjaDIzYVFhajdXT3pKRFhwWF8yYWszY0FkU1RuQ0hFVFBPNWgzczg1ajhnQnF5X2FKSmZR";
-            var req = new HttpRequestMessage(HttpMethod.Get, "https://assetdelivery.roblox.com/v2/assetId/" + assetId.ToString());
+            var req = new HttpRequestMessage(HttpMethod.Get, "https://apis.roblox.com/asset-delivery-api/v1/assetId/" + assetId.ToString());
             req.Headers.Add("x-api-key", api_key);
             var responseMessage = await client.SendAsync(req);
             string downloadLink = await responseMessage.Content.ReadAsStringAsync();
-
+            Console.WriteLine(downloadLink);
             var response = JsonSerializer.Deserialize<DownloadLink>(downloadLink);
             // need to error check in case we get paywalled
             if (response.errors != null)
@@ -140,7 +140,7 @@ namespace robloxTest
             }
             
             // Stream fileStream = await client.GetStreamAsync(downloadLink);
-            byte[] byteArray = await client.GetByteArrayAsync(response.locations[0].location);
+            byte[] byteArray = await client.GetByteArrayAsync(response.location);
             try
             {
                 RobloxFile file = RobloxFile.Open(byteArray);
