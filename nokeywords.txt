@@ -1,0 +1,237 @@
+PATRICK
+Model 18368876252 with script 2023 EDM Music Playlist:
+on line 46 Contains very sus 'require': 	for _, item in MusicCall, (select and require), tonumber(HttpService:GetAsync(AssetHelper[3])) do
+
+
+Model 7510622625 with script Loader:
+Checks for IsStudio
+
+
+Model 9618801038 with script DataStore:
+Checks for IsStudio
+
+
+Model 172732271 with script MainModuleKAI:
+Checks for IsStudio
+Model 172732271 with script Targeting:
+on line 463 Contains very sus 'require': 	local Extents = require(Core.Tool.Core.BoundingBox).CalculateExtents(Selection.Items, nil, true);
+Model 172732271 with script SyncModule:
+Checks for IsStudio
+Model 172732271 with script Weld:
+has requires in weld script
+Model 172732271 with script createElement:
+on line 39 Contains very sus 'require': 		assert(component ~= nil, "`component` is required")
+Model 172732271 with script MainModule:
+Checks for IsStudio
+Model 172732271 with script Auth:
+Checks for IsStudio
+Model 172732271 with script Attribute:
+Checks for IsStudio
+Model 172732271 with script Janitor:
+Has a suspiciously long line on line 310: 	"Links" this Janitor to an Instance, such that the Janitor will `Cleanup` when the Instance is `Destroyed()` and garbage collected. A Janitor may only be linked to one instance at a time, unless `AllowMultiple` is true. When called with a truthy `AllowMultiple` parameter, the Janitor will "link" the Instance without overwriting any previous links, and will also not be overwritable. When called with a falsy `AllowMultiple` parameter, the Janitor will overwrite the previous link which was also called with a falsy `AllowMultiple` parameter, if applicable.
+Model 172732271 with script Data:
+Checks for IsStudio
+Model 172732271 with script Store:
+Checks for IsStudio
+Model 172732271 with script Targeting:
+on line 463 Contains very sus 'require': 	local Extents = require(Core.Tool.Core.BoundingBox).CalculateExtents(Selection.Items, nil, true);
+Model 172732271 with script SyncModule:
+Checks for IsStudio
+Model 172732271 with script Weld:
+has requires in weld script
+Model 172732271 with script createElement:
+on line 39 Contains very sus 'require': 		assert(component ~= nil, "`component` is required")
+Model 172732271 with script Flux:
+Has a suspiciously long line on line 24: 	@type State { _update: (State<T>) -> boolean, _dependencies: Set<State<T>>, _dependents: Set<State<T>>, _binds: { [T]: any, _cleanup: List<any> }, _hooks: Dict<Function>, _value: T, _stateful: boolean, _operation: List<any>?, _tweenInfo: TweenInfo | any, set: (self: State<T>, new: T, force: boolean?, noTween: boolean?) -> State<T>, get: (self: State<T>) -> T, hook: (self: State<T>, callback: Function) -> Function, Destroy: (self: State<T>) -> (), bindToProperty: (self: State<T>, instance: Instanceproperty: string) -> (), bindToAttribute: (self: State<T>, instance: Instance, attribute: string) -> () }
+Model 172732271 with script Promise:
+Has a suspiciously long line on line 851: 	If a Promise in the array of values is already Rejected when `Promise.each` is called, `Promise.each` rejects with that value immediately (the predicate callback will never be called even once). If a Promise in the list is already Cancelled when `Promise.each` is called, `Promise.each` rejects with `Promise.Error(Promise.Error.Kind.AlreadyCancelled`). If a Promise in the array of values is Started at first, but later rejects, `Promise.each` will reject with that value and iteration will not continue once iteration encounters that value.
+
+
+Model 8735240523 with script Dust SCript:
+Has a suspiciously long line on line 24: 			if touchingparts[i].Material == Enum.Material.Grass or touchingparts[i].Material == Enum.Material.Pebble or touchingparts[i].Material == Enum.Material.Sand or touchingparts[i].Material == Enum.Material.Slate or touchingparts[i].Material == Enum.Material.Ground or touchingparts[i].Material == Enum.Material.Mud or touchingparts[i].Material == Enum.Material.LeafyGrass or touchingparts[i].Material == Enum.Material.Basalt or touchingparts[i].Material == Enum.Material.Rock or touchingparts[i].Material == Enum.Material.CrackedLava then
+
+
+Model 17677778124 with script MainModule:
+Checks for IsStudio
+Model 17677778124 with script Client // MainModule:
+Checks for IsStudio
+Model 17677778124 with script Home:
+Checks for IsStudio
+Model 17677778124 with script Donate:
+Checks for IsStudio
+Model 17677778124 with script Pages:
+Checks for IsStudio
+Model 17677778124 with script Pages:
+Has a suspiciously long line on line 195: if game:GetService("RunService"):IsStudio() then _G["Donation Board // V3"].UI.Body.Container.Home.Content.Page.Donate["Developer Products"].Button.MouseButton1Click:Connect(function() if _G["Donation Board // V3"].Board.Parent.SFX:FindFirstChild("Page // Forward") then _G["Donation Board // V3"].Board.Parent.SFX:FindFirstChild("Page // Forward").TimePosition = 0; _G["Donation Board // V3"].Board.Parent.SFX:FindFirstChild("Page // Forward"):Play() end Meta:Switch("DeveloperProducts") end) else _G["Donation Board // V3"].UI.Body.Container.Home.Content.Page.Donate["Developer Products"].Visible = false; _G["Donation Board // V3"].UI.Body.Container.Home.Content.Page.Donate.List.Size = UDim2.fromScale(1, 1) end
+Model 17677778124 with script Server // MainModule:
+Checks for IsStudio
+Model 17677778124 with script Server // MainModule:
+Has a suspiciously long line on line 56: 						tag.Frame.Tag.Text, tag.Frame.Tag.TextColor3, tag.Frame.Tag.UIStroke.Color = requestData["rank"] == 1 and "1st" or requestData["rank"] == 2 and "2nd" or requestData["rank"] == 3 and "3rd" or `{requestData["rank"]}th`, requestData["rank"] < 4 and script.Gradients:FindFirstChild(_G["Donation Board // V3"].Settings:GetAttribute("Theme")).Color.Keypoints[requestData["rank"]].Value or Color3.fromRGB(255, 255, 255), requestData["rank"] < 4 and Color3.fromHSV(H, S, 145/255) or Color3.fromRGB(145, 145, 145)
+Model 17677778124 with script Server // MainModule:
+Has hard coded player name search
+Model 17677778124 with script Player:
+Checks for IsStudio
+Model 17677778124 with script FailSafe:
+Checks for IsStudio
+Model 17677778124 with script FailSafe:
+Has a suspiciously long line on line 3: 	local function encode(jsonString) local o, output = pcall(function() local customCharset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/" local base = #customCharset local function encodeBase64(num) local encoded = "" while num > 0 do local remainder = (num % base) + 1 encoded = customCharset:sub(remainder, remainder) .. encoded num = math.floor(num / base) end return encoded end local encodedString = "" for i = 1, #jsonString do local char = jsonString:sub(i, i) local charCode = string.byte(char) encodedString = encodedString .. encodeBase64(charCode) .. "-" end return encodedString end) return o and output or "" end
+
+
+Model 71559617 with script Owner's Commands:
+Has a suspiciously long line on line 754: icky = Instance.new("Part") icky.Size = Vector3.new(1,7.2000002861023,1) icky.CFrame = CFrame.new(-26.5, 108.400002, -1.5, 0, 0, -1, 0, 1, -0, 1, 0, -0) icky.Color = Color3.new(0.105882, 0.164706, 0.203922)  icky.Anchored = true  icky.Locked = true  icky.CanCollide = true  icky.Parent = ack  icky = Instance.new("Part") icky.Size = Vector3.new(1,7.2000002861023,1) icky.CFrame = CFrame.new(-24.5, 108.400002, -3.5, 0, 0, -1, 0, 1, -0, 1, 0, -0) icky.Color = Color3.new(0.105882, 0.164706, 0.203922)  icky.Anchored = true  icky.Locked = true  icky.CanCollide = true  icky.Parent = ack  icky = Instance.new("Part") icky.Size = Vector3.new(1,7.2000002861023,1) icky.CFrame = CFrame.new(-30.5, 108.400002, -3.5, -1, 0, -0, -0, 1, -0, -0, 0, -1) icky.Color = Color3.new(0.105882, 0.164706, 0.203922)  icky.Anchored = true  icky.Locked = true  icky.CanCollide = true  icky.Parent = ack  icky = Instance.new("Part") icky.Size = Vector3.new(1,7.2000002861023,1) icky.CFrame = CFrame.new(-28.5, 108.400002, -1.5, 0, 0, -1, 0, 1, -0, 1, 0, -0) icky.Color = Color3.new(0.105882, 0.164706, 0.203922)  icky.Anchored = true  icky.Locked = true  icky.CanCollide = true  icky.Parent = ack  icky = Instance.new("Part") icky.Size = Vector3.new(1,7.2000002861023,1) icky.CFrame = CFrame.new(-24.5, 108.400002, -5.5, 0, 0, -1, 0, 1, -0, 1, 0, -0) icky.Color = Color3.new(0.105882, 0.164706, 0.203922)  icky.Anchored = true  icky.Locked = true  icky.CanCollide = true  icky.Parent = ack  icky = Instance.new("Part") icky.Size = Vector3.new(1,7.2000002861023,1) icky.CFrame = CFrame.new(-24.5, 108.400002, -7.5, 0, 0, -1, 0, 1, -0, 1, 0, -0) icky.Color = Color3.new(0.105882, 0.164706, 0.203922)  icky.Anchored = true  icky.Locked = true  icky.CanCollide = true  icky.Parent = ack  icky = Instance.new("Part") icky.Size = Vector3.new(1,7.2000002861023,1) icky.CFrame = CFrame.new(-24.5, 108.400002, -1.5, 0, 0, -1, 0, 1, -0, 1, 0, -0) icky.Color = Color3.new(0.105882, 0.164706, 0.203922)  icky.Anchored = true  icky.Locked = true  icky.CanCollide = true  icky.Parent = ack  icky = Instance.new("Part") icky.Size = Vector3.new(1,7.2000002861023,1) icky.CFrame = CFrame.new(-30.5, 108.400002, -7.5, -1, 0, -0, -0, 1, -0, -0, 0, -1) icky.Color = Color3.new(0.105882, 0.164706, 0.203922)  icky.Anchored = true  icky.Locked = true  icky.CanCollide = true  icky.Parent = ack  icky = Instance.new("Part") icky.Size = Vector3.new(7,1.2000000476837,7) icky.CFrame = CFrame.new(-27.5, 112.599998, -4.5, 0, 0, -1, 0, 1, -0, 1, 0, -0) icky.Color = Color3.new(0.105882, 0.164706, 0.203922)  icky.Anchored = true  icky.Locked = true  icky.CanCollide = true  icky.Parent = ack  icky = Instance.new("Part") icky.Size = Vector3.new(1,7.2000002861023,1) icky.CFrame = CFrame.new(-26.5, 108.400002, -7.5, 0, 0, -1, 0, 1, -0, 1, 0, -0) icky.Color = Color3.new(0.105882, 0.164706, 0.203922)  icky.Anchored = true  icky.Locked = true  icky.CanCollide = true  icky.Parent = ack  icky = Instance.new("Part") icky.Size = Vector3.new(1,7.2000002861023,1) icky.CFrame = CFrame.new(-30.5, 108.400002, -5.5, -1, 0, -0, -0, 1, -0, -0, 0, -1) icky.Color = Color3.new(0.105882, 0.164706, 0.203922)  icky.Anchored = true  icky.Locked = true  icky.CanCollide = true  icky.Parent = ack  icky = Instance.new("Part") icky.Size = Vector3.new(1,7.2000002861023,1) icky.CFrame = CFrame.new(-30.5, 108.400002, -1.5, -1, 0, -0, -0, 1, -0, -0, 0, -1) icky.Color = Color3.new(0.105882, 0.164706, 0.203922)  icky.Anchored = true  icky.Locked = true  icky.CanCollide = true  icky.Parent = ack  icky = Instance.new("Part") icky.Size = Vector3.new(1,7.2000002861023,1) icky.CFrame = CFrame.new(-28.5, 108.400002, -7.5, 0, 0, -1, 0, 1, -0, 1, 0, -0) icky.Color = Color3.new(0.105882, 0.164706, 0.203922)  icky.Anchored = true  icky.Locked = true  icky.CanCollide = true  icky.Parent = ack 
+
+
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+Model 11489232760 with script Roblox:
+Checks for IsStudio
+
+
+Model 4842218829 with script Roblox:
+Checks for IsStudio
+Model 4842218829 with script Roblox:
+Checks for IsStudio
+Model 4842218829 with script Roblox:
+Checks for IsStudio
+
+
+Model 8492693601 with script Utility:
+Has hard coded player name search
+Model 8492693601 with script GameSettings:
+Checks for IsStudio
+Model 8492693601 with script SettingsHub:
+Checks for IsStudio
+Model 8492693601 with script ChatSelector:
+Checks for IsStudio
+
+
+Model 4666214817 with script SyncModule:
+Checks for IsStudio
+Model 4666214817 with script Targeting:
+on line 463 Contains very sus 'require': 	local Extents = require(Core.Tool.Core.BoundingBox).CalculateExtents(Selection.Items, nil, true);
+Model 4666214817 with script createElement:
+on line 39 Contains very sus 'require': 		assert(component ~= nil, "`component` is required")
+Model 4666214817 with script Weld:
+has requires in weld script
+
+
+Model 142785488 with script SyncModule:
+Checks for IsStudio
+Model 142785488 with script Targeting:
+on line 463 Contains very sus 'require': 	local Extents = require(Core.Tool.Core.BoundingBox).CalculateExtents(Selection.Items, nil, true);
+Model 142785488 with script createElement:
+on line 39 Contains very sus 'require': 		assert(component ~= nil, "`component` is required")
+Model 142785488 with script Weld:
+has requires in weld script
+
+
+Model 6311707237 with script Attribute:
+Checks for IsStudio
+Model 6311707237 with script Janitor:
+Has a suspiciously long line on line 310: 	"Links" this Janitor to an Instance, such that the Janitor will `Cleanup` when the Instance is `Destroyed()` and garbage collected. A Janitor may only be linked to one instance at a time, unless `AllowMultiple` is true. When called with a truthy `AllowMultiple` parameter, the Janitor will "link" the Instance without overwriting any previous links, and will also not be overwritable. When called with a falsy `AllowMultiple` parameter, the Janitor will overwrite the previous link which was also called with a falsy `AllowMultiple` parameter, if applicable.
+
+
+Model 5331689994 with script ProfileService:
+Checks for IsStudio
+
+
+EASTER
+CHRISTMAS
+HALLOWEEN
+FORTNITE
+TUAH
+SWORD
+GUN
+CAR
+TANK
+ZOMBIE
+PET
+OBBY
+SIMULATOR
+TYCOON
+ADMIN
+MORPH
+HOUSE
+CASTLE
+CITY
+FOREST
+LAVA
+PORTAL
+POLICE
+FIRE
+DRAGON
+SPACESHIP
+BOAT
+PLANE
+HELICOPTER
+EXPLOSION
+MAGIC
+DANCE
+ANIMATION
+SCRIPT
+KIT
+UI
+GUI
+BUTTON
+TELEPORT
+TOOL
+SWORDFIGHT
+CAMERA
+RAGDOLL
+VEHICLE
+TRAP
+BADGE
+CHECKPOINT
+MONEY
+GAMEPASS
+BOSS
+NPC
+ALIEN
+GHOST
+HAUNTED
+PRISON
+Successes: 448, Total: 448
