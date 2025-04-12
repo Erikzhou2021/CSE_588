@@ -71,6 +71,7 @@ namespace robloxTest
             malwareTypeCount.Add("longFile", 0);
             malwareTypeCount.Add("longLine", 0);
             malwareTypeCount.Add("hardCodedName", 0);
+            malwareTypeCount.Add("hardCodedFriend", 0);
         }
         public async Task Main()
         {
@@ -249,6 +250,13 @@ namespace robloxTest
                         Console.WriteLine($"Has hard coded player name search");
                         malwareTypes.Add("hardCodedName");
                     }
+
+                    if(Scraper.checkHardCodedPlayerName(sourceString)){
+                        susted = true;
+                        Console.WriteLine($"Model {assetId} with script {obj.Name}:");
+                        Console.WriteLine($"Has hard coded friend id check");
+                        malwareTypes.Add("hardCodedFriend");
+                    }
                 }
             }
             foreach (string name in malwareTypes){
@@ -260,8 +268,14 @@ namespace robloxTest
         }
 
         public static bool checkHardCodedPlayerName(string sourceCode){
-            if(sourceCode.Contains("game:GetService(\"Players\"):FindFirstChild(") || 
-                sourceCode.Contains("game:GetService('Players'):FindFirstChild(")){
+            string directPattern = @"game:GetService\([""']Players[""']\):FindFirstChild\([""']";
+            // string directPattern = @"game:GetService\([""']Players[""']\):FindFirstChild\(";
+            if(Regex.Matches(sourceCode, directPattern).Count > 0){
+                return true;
+            }
+            string directUserIdPattern = @"game:GetService\([""']Players[""']\):GetUserIdFromNameAsync\([""']";
+            // string directUserIdPattern = @"game:GetService\([""']Players[""']\):GetUserIdFromNameAsync\(";
+            if(Regex.Matches(sourceCode, directUserIdPattern).Count > 0){
                 return true;
             }
 
@@ -279,13 +293,24 @@ namespace robloxTest
 
             // checks when they later use the variable
             // we might have false positives if they reassign the variable before using it
-            string findPlayerPattern = $@"\b({string.Join("|", playerVariables)})\:FindFirstChild\(";
-            var findPlayerMatches = Regex.Matches(sourceCode, findPlayerPattern);
-            if(findPlayerMatches.Count > 0){
+            string findPlayerPattern = $@"\b({string.Join("|", playerVariables)})\:FindFirstChild\([""']";
+            // string findPlayerPattern = $@"\b({string.Join("|", playerVariables)})\:FindFirstChild\(";
+            if(Regex.Matches(sourceCode, findPlayerPattern).Count > 0){
                 return true;
             }
 
+            string findUserIdPattern = $@"\b({string.Join("|", playerVariables)})\:GetUserIdFromNameAsync\([""']";
             // string findUserIdPattern = $@"\b({string.Join("|", playerVariables)})\:GetUserIdFromNameAsync\(";
+            if(Regex.Matches(sourceCode, findUserIdPattern).Count > 0){
+                return true;
+            }
+            return false;
+        }
+        public static bool checkHardCodedFriend(string sourceCode){
+            string pattern = @"IsFriendsWith\(\d+\)";
+            if(Regex.Matches(sourceCode, pattern).Count > 0){
+                return true;
+            }
             return false;
         }
         public static void parseFile(byte[] bytes)
