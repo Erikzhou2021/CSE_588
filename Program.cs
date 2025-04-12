@@ -3,6 +3,8 @@ using System.Text.Json;
 using RobloxFiles;
 using RobloxFiles.DataTypes;
 using System.ComponentModel;
+using System;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Runtime;
@@ -268,6 +270,26 @@ namespace robloxTest
 
             // string findUserIdPattern = $@"\b({string.Join("|", playerVariables)})\:GetUserIdFromNameAsync\(";
             return false;
+        }
+        public static void parseFile(byte[] bytes)
+        {
+            try
+            {
+                RobloxFile file = RobloxFile.Open(bytes);
+                //RobloxFile file = RobloxFile.Open(fileStream);
+                //RobloxFile file = RobloxFile.Open("temp.rbxm");
+                foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(file))
+                {
+                    string name = descriptor.Name;
+                    object value = descriptor.GetValue(file);
+                    Console.WriteLine("{0}={1}", name, value);
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
