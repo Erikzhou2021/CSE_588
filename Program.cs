@@ -61,9 +61,16 @@ namespace robloxTest
     {
         HttpClient client;
         int s = 0;
+        Dictionary<string, int> malwareTypeCount = new Dictionary<string, int>();
         public Scraper(){
             var clientHandler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
             client = new HttpClient(clientHandler);
+            malwareTypeCount.Add("require", 0);
+            malwareTypeCount.Add("fakeOfficial", 0);
+            malwareTypeCount.Add("isStudio", 0);
+            malwareTypeCount.Add("longFile", 0);
+            malwareTypeCount.Add("longLine", 0);
+            malwareTypeCount.Add("hardCodedName", 0);
         }
         public async Task Main()
         {
@@ -104,22 +111,21 @@ namespace robloxTest
                     }
                     p++;
                 }
+                catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.TooManyRequests)
+                {
+                    Console.WriteLine($"429 Too Many Requests - Waiting {30} seconds...");
+                    await Task.Delay(30_000);
+                }
+                catch (HttpRequestException e)
+                {
+                    Console.WriteLine("\nException Caught!");
+                    Console.WriteLine("Message :{0} ", e.Message);
+                }
             }
-            catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.TooManyRequests)
+            foreach (KeyValuePair<string, int> kvp in malwareTypeCount)
             {
-                Console.WriteLine($"429 Too Many Requests - Waiting {30} seconds...");
-                await Task.Delay(30_000);
+                Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
             }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine("\nException Caught!");
-                Console.WriteLine("Message :{0} ", e.Message);
-                
-            }
-            }
-            
-
-            Console.WriteLine($"Successes: {s}, Total: {total}");
         }
 
         public async Task checkAsset(long assetId){
@@ -150,13 +156,19 @@ namespace robloxTest
             }
             
             // Stream fileStream = await client.GetStreamAsync(downloadLink);
-            byte[] byteArray = await client.GetByteArrayAsync(response.location);
+            byte[] byteArray = await client.GetByteArrayAsync(response.locations[0].location);
+            RobloxFile file;
             try
             {
-                RobloxFile file = RobloxFile.Open(byteArray);
-                s++;
-                bool susted = false;
-
+                file = RobloxFile.Open(byteArray);
+            }
+            catch (Exception e){
+                Console.WriteLine($"stream failed: {e.Message}");
+                return;
+            }
+            s++;
+            bool susted = false;
+            HashSet<string> malwareTypes = new HashSet<string>();
             foreach (var obj in file.GetDescendants()) {
                 if (obj.ClassName == "Script" || obj.ClassName == "ModuleScript") {
                     Property source = obj.GetProperty("Source");
@@ -191,6 +203,9 @@ namespace robloxTest
                                 Console.WriteLine($"on line {x.Item1} Contains very sus 'require': {x.Item2}");
                             }
                         }
+                        if(susted){
+                            malwareTypes.Add("require");
+                        }
                     }
 
                     // roblox faker check
@@ -198,6 +213,7 @@ namespace robloxTest
                         susted = true;
                         Console.WriteLine($"Model {assetId} with script {obj.Name}:");
                         Console.WriteLine($"has OFFICIAL ROBLOX in it");
+                        malwareTypes.Add("fakeOfficial");
                     }
 
                     // circumvention check
@@ -205,6 +221,7 @@ namespace robloxTest
                         susted = true;
                         Console.WriteLine($"Model {assetId} with script {obj.Name}:");
                         Console.WriteLine($"Checks for IsStudio");
+                        malwareTypes.Add("isStudio");
                     }
 
                     // lines check
@@ -212,15 +229,15 @@ namespace robloxTest
                         susted = true;
                         Console.WriteLine($"Model {assetId} with script {obj.Name}:");
                         Console.WriteLine("Has a suspicious number of lines");
+                        malwareTypes.Add("longFile");
                     }
-
-
 
                     for (int i = 0; i < lines.Length; i++) {
                         if (lines[i].Length > 500) {
                             susted = true;
                             Console.WriteLine($"Model {assetId} with script {obj.Name}:");
                             Console.WriteLine($"Has a suspiciously long line on line {i + 1}: {lines[i]}");
+                            malwareTypes.Add("longLine");
                             break;
                         } 
                     }
@@ -229,16 +246,15 @@ namespace robloxTest
                         susted = true;
                         Console.WriteLine($"Model {assetId} with script {obj.Name}:");
                         Console.WriteLine($"Has hard coded player name search");
+                        malwareTypes.Add("hardCodedName");
                     }
                 }
             }
+            foreach (string name in malwareTypes){
+                malwareTypeCount[name]++;
+            }
             if (susted) {
                 Console.WriteLine("\n");
-            }
-
-            }
-            catch (Exception e){
-                Console.WriteLine($"stream failed: {e.Message}");
             }
         }
 
