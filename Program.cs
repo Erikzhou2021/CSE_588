@@ -89,27 +89,28 @@ namespace robloxTest
                 Console.WriteLine(keyword.ToUpper());
                 int p = 0;
                 try
-            {
-                while (p < 10) {
-                    string responseBody = await client.GetStringAsync($"https://apis.roblox.com/toolbox-service/v1/marketplace/10?limit=100&pageNumber={p}&keyword={keyword}");
-                    MarketplacePage page = JsonSerializer.Deserialize<MarketplacePage>(responseBody);
-                    List<long> ids = new List<long>();
-                    foreach (MarkplaceData asset in page.data)
-                    {
-                        ids.Add(asset.id);
-                    }
-                    string paramList = String.Join(",", ids);
-                    responseBody = await client.GetStringAsync("https://apis.roblox.com/toolbox-service/v1/items/details?assetIds=" + paramList);
-                    MarketplaceDetails details = JsonSerializer.Deserialize<MarketplaceDetails>(responseBody);
-                    foreach (MarketplaceAsset asset in details.data)
-                    {
-                        if (asset.asset.hasScripts)
+                {
+                    while (p < 10) {
+                        string responseBody = await client.GetStringAsync($"https://apis.roblox.com/toolbox-service/v1/marketplace/10?limit=100&pageNumber={p}&keyword={keyword}");
+                        MarketplacePage page = JsonSerializer.Deserialize<MarketplacePage>(responseBody);
+                        List<long> ids = new List<long>();
+                        foreach (MarkplaceData asset in page.data)
                         {
-                            total++;
-                            await checkAsset(asset.asset.id);
+                            ids.Add(asset.id);
                         }
+                        string paramList = String.Join(",", ids);
+                        responseBody = await client.GetStringAsync("https://apis.roblox.com/toolbox-service/v1/items/details?assetIds=" + paramList);
+                        MarketplaceDetails details = JsonSerializer.Deserialize<MarketplaceDetails>(responseBody);
+                        foreach (MarketplaceAsset asset in details.data)
+                        {
+                            if (asset.asset.hasScripts)
+                            {
+                                total++;
+                                await checkAsset(asset.asset.id);
+                            }
+                        }
+                        p++;
                     }
-                    p++;
                 }
                 catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.TooManyRequests)
                 {
@@ -156,7 +157,7 @@ namespace robloxTest
             }
             
             // Stream fileStream = await client.GetStreamAsync(downloadLink);
-            byte[] byteArray = await client.GetByteArrayAsync(response.locations[0].location);
+            byte[] byteArray = await client.GetByteArrayAsync(response.location);
             RobloxFile file;
             try
             {
