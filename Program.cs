@@ -3,6 +3,8 @@ using System.Text.Json;
 using RobloxFiles;
 using RobloxFiles.DataTypes;
 using System.ComponentModel;
+using System;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Runtime;
@@ -15,6 +17,7 @@ await scraper.Main();
 
 namespace robloxTest
 {
+
     public struct MarkplaceData
     {
         public long id { get; set; }
@@ -46,18 +49,17 @@ namespace robloxTest
     }
     public struct DownloadLinkError
     {
-        public string code { get; set; }
+        public int code { get; set; }
         public string message { get; set; }
     }
     public struct DownloadLink
     {
-        public List<DownloadLinkData>? locations { get; set; }
+        public string? location { get; set; }
         public List<DownloadLinkError>? errors { get; set; }
     }
     public class Scraper
     {
         HttpClient client;
-        int p = 0;
         int s = 0;
         Dictionary<string, int> malwareTypeCount = new Dictionary<string, int>();
         public Scraper(){
@@ -73,13 +75,23 @@ namespace robloxTest
         public async Task Main()
         {
             int total = 0;
-
-            while (p < 2)
+            string[] keywords = {
+                "patrick", "easter", "christmas", "halloween", "fortnite", "tuah",
+                "sword", "gun", "car", "tank", "zombie", "pet", "obby", "simulator", "tycoon",
+                "admin", "morph", "house", "castle", "city", "forest", "lava", "portal", 
+                "police", "fire", "dragon", "spaceship", "boat", "plane", "helicopter", 
+                "explosion", "magic", "dance", "animation", "script", "kit", "ui", "gui", 
+                "button", "teleport", "tool", "swordfight", "camera", "ragdoll", "vehicle", 
+                "trap", "badge", "checkpoint", "money", "gamepass", "boss", "npc", "alien", 
+                "ghost", "haunted", "prison"
+            };
+            foreach (string keyword in keywords) {
+                Console.WriteLine(keyword.ToUpper());
+                int p = 0;
+                try
             {
-                try 
-                {
-                    string responseBody = await client.GetStringAsync($"https://apis.roblox.com/toolbox-service/v1/marketplace/10?limit=100&pageNumber={p}");
-
+                while (p < 10) {
+                    string responseBody = await client.GetStringAsync($"https://apis.roblox.com/toolbox-service/v1/marketplace/10?limit=100&pageNumber={p}&keyword={keyword}");
                     MarketplacePage page = JsonSerializer.Deserialize<MarketplacePage>(responseBody);
                     List<long> ids = new List<long>();
                     foreach (MarkplaceData asset in page.data)
@@ -117,9 +129,22 @@ namespace robloxTest
         }
 
         public async Task checkAsset(long assetId){
-            string downloadLink = await client.GetStringAsync("https://assetdelivery.roblox.com/v2/assetId/" + assetId.ToString());
 
-            var response = JsonSerializer.Deserialize<DownloadLink>(downloadLink);
+            DownloadLink response;
+            try {
+                string api_key = "0EGOJlVXckqHCdPk2N1yiD835QGOArfgjtMd8oXFW7m0P0bqZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNkluTnBaeTB5TURJeExUQTNMVEV6VkRFNE9qVXhPalE1V2lJc0luUjVjQ0k2SWtwWFZDSjkuZXlKaVlYTmxRWEJwUzJWNUlqb2lNRVZIVDBwc1ZsaGphM0ZJUTJSUWF6Sk9NWGxwUkRnek5WRkhUMEZ5Wm1kcWRFMWtPRzlZUmxjM2JUQlFNR0p4SWl3aWIzZHVaWEpKWkNJNklqUTVNakV3T0RnME9EVWlMQ0poZFdRaU9pSlNiMkpzYjNoSmJuUmxjbTVoYkNJc0ltbHpjeUk2SWtOc2IzVmtRWFYwYUdWdWRHbGpZWFJwYjI1VFpYSjJhV05sSWl3aVpYaHdJam94TnpRME5ERTBOemMxTENKcFlYUWlPakUzTkRRME1URXhOelVzSW01aVppSTZNVGMwTkRReE1URTNOWDAuRC1TaGNRdUJCdUFFczdQd3FyZE1Ia2ZRTnlvaDZXY1pqcTNNMXdKeENPNGF5TTBOLVkwVDZLTV9JYlhxR2VPTFpjeWRWR05PTTB0XzBSc2o2eldSUXp0Ui1DcEgwMklzdlNWZzdYR3FYTFlaLU8xci04Qkx6X1NVRDhHQmNId1RJOFlZMlB4NmpmNGRzX2dlLWZMUDFZNEczelhrbGtHME13N3Zfd1pxVlFXLU5fbVFSNzJ6eTFYYXhSTHpYNXpaMGU3RWI4TEN4ZnNPeTFmSFNTRTRNQVNKX1VDREs1T1pkYldXZUgzVlgyaGwza0p5RFhHMG1EMmhsZkhTd09GMzVUckZXSlotVXlMX3dvV2hTdExiMDhnRzhYLVZDejViVlhjaDIzYVFhajdXT3pKRFhwWF8yYWszY0FkU1RuQ0hFVFBPNWgzczg1ajhnQnF5X2FKSmZR";
+                var req = new HttpRequestMessage(HttpMethod.Get, "https://apis.roblox.com/asset-delivery-api/v1/assetId/" + assetId.ToString());
+                req.Headers.Add("x-api-key", api_key);
+                var responseMessage = await client.SendAsync(req);
+                string downloadLink = await responseMessage.Content.ReadAsStringAsync();
+                response = JsonSerializer.Deserialize<DownloadLink>(downloadLink);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+                return;
+            }
             // need to error check in case we get paywalled
             if (response.errors != null)
             {
@@ -261,6 +286,26 @@ namespace robloxTest
 
             // string findUserIdPattern = $@"\b({string.Join("|", playerVariables)})\:GetUserIdFromNameAsync\(";
             return false;
+        }
+        public static void parseFile(byte[] bytes)
+        {
+            try
+            {
+                RobloxFile file = RobloxFile.Open(bytes);
+                //RobloxFile file = RobloxFile.Open(fileStream);
+                //RobloxFile file = RobloxFile.Open("temp.rbxm");
+                foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(file))
+                {
+                    string name = descriptor.Name;
+                    object value = descriptor.GetValue(file);
+                    Console.WriteLine("{0}={1}", name, value);
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
