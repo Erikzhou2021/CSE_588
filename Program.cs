@@ -58,7 +58,6 @@ namespace robloxTest
     public class Scraper
     {
         HttpClient client;
-        int p = 0;
         int s = 0;
         public Scraper(){
             var clientHandler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
@@ -79,11 +78,11 @@ namespace robloxTest
             };
             foreach (string keyword in keywords) {
                 Console.WriteLine(keyword.ToUpper());
+                int p = 0;
                 try
             {
                 while (p < 10) {
-                    string responseBody = await client.GetStringAsync($"https://apis.roblox.com/toolbox-service/v1/marketplace/10?limit=100&pageNumber={p}");
-
+                    string responseBody = await client.GetStringAsync($"https://apis.roblox.com/toolbox-service/v1/marketplace/10?limit=100&pageNumber={p}&keyword={keyword}");
                     MarketplacePage page = JsonSerializer.Deserialize<MarketplacePage>(responseBody);
                     List<long> ids = new List<long>();
                     foreach (MarkplaceData asset in page.data)
@@ -122,13 +121,22 @@ namespace robloxTest
         }
 
         public async Task checkAsset(long assetId){
-            string api_key = "0EGOJlVXckqHCdPk2N1yiD835QGOArfgjtMd8oXFW7m0P0bqZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNkluTnBaeTB5TURJeExUQTNMVEV6VkRFNE9qVXhPalE1V2lJc0luUjVjQ0k2SWtwWFZDSjkuZXlKaVlYTmxRWEJwUzJWNUlqb2lNRVZIVDBwc1ZsaGphM0ZJUTJSUWF6Sk9NWGxwUkRnek5WRkhUMEZ5Wm1kcWRFMWtPRzlZUmxjM2JUQlFNR0p4SWl3aWIzZHVaWEpKWkNJNklqUTVNakV3T0RnME9EVWlMQ0poZFdRaU9pSlNiMkpzYjNoSmJuUmxjbTVoYkNJc0ltbHpjeUk2SWtOc2IzVmtRWFYwYUdWdWRHbGpZWFJwYjI1VFpYSjJhV05sSWl3aVpYaHdJam94TnpRME5ERTBOemMxTENKcFlYUWlPakUzTkRRME1URXhOelVzSW01aVppSTZNVGMwTkRReE1URTNOWDAuRC1TaGNRdUJCdUFFczdQd3FyZE1Ia2ZRTnlvaDZXY1pqcTNNMXdKeENPNGF5TTBOLVkwVDZLTV9JYlhxR2VPTFpjeWRWR05PTTB0XzBSc2o2eldSUXp0Ui1DcEgwMklzdlNWZzdYR3FYTFlaLU8xci04Qkx6X1NVRDhHQmNId1RJOFlZMlB4NmpmNGRzX2dlLWZMUDFZNEczelhrbGtHME13N3Zfd1pxVlFXLU5fbVFSNzJ6eTFYYXhSTHpYNXpaMGU3RWI4TEN4ZnNPeTFmSFNTRTRNQVNKX1VDREs1T1pkYldXZUgzVlgyaGwza0p5RFhHMG1EMmhsZkhTd09GMzVUckZXSlotVXlMX3dvV2hTdExiMDhnRzhYLVZDejViVlhjaDIzYVFhajdXT3pKRFhwWF8yYWszY0FkU1RuQ0hFVFBPNWgzczg1ajhnQnF5X2FKSmZR";
-            var req = new HttpRequestMessage(HttpMethod.Get, "https://apis.roblox.com/asset-delivery-api/v1/assetId/" + assetId.ToString());
-            req.Headers.Add("x-api-key", api_key);
-            var responseMessage = await client.SendAsync(req);
-            string downloadLink = await responseMessage.Content.ReadAsStringAsync();
-            Console.WriteLine(downloadLink);
-            var response = JsonSerializer.Deserialize<DownloadLink>(downloadLink);
+
+            DownloadLink response;
+            try {
+                string api_key = "0EGOJlVXckqHCdPk2N1yiD835QGOArfgjtMd8oXFW7m0P0bqZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNkluTnBaeTB5TURJeExUQTNMVEV6VkRFNE9qVXhPalE1V2lJc0luUjVjQ0k2SWtwWFZDSjkuZXlKaVlYTmxRWEJwUzJWNUlqb2lNRVZIVDBwc1ZsaGphM0ZJUTJSUWF6Sk9NWGxwUkRnek5WRkhUMEZ5Wm1kcWRFMWtPRzlZUmxjM2JUQlFNR0p4SWl3aWIzZHVaWEpKWkNJNklqUTVNakV3T0RnME9EVWlMQ0poZFdRaU9pSlNiMkpzYjNoSmJuUmxjbTVoYkNJc0ltbHpjeUk2SWtOc2IzVmtRWFYwYUdWdWRHbGpZWFJwYjI1VFpYSjJhV05sSWl3aVpYaHdJam94TnpRME5ERTBOemMxTENKcFlYUWlPakUzTkRRME1URXhOelVzSW01aVppSTZNVGMwTkRReE1URTNOWDAuRC1TaGNRdUJCdUFFczdQd3FyZE1Ia2ZRTnlvaDZXY1pqcTNNMXdKeENPNGF5TTBOLVkwVDZLTV9JYlhxR2VPTFpjeWRWR05PTTB0XzBSc2o2eldSUXp0Ui1DcEgwMklzdlNWZzdYR3FYTFlaLU8xci04Qkx6X1NVRDhHQmNId1RJOFlZMlB4NmpmNGRzX2dlLWZMUDFZNEczelhrbGtHME13N3Zfd1pxVlFXLU5fbVFSNzJ6eTFYYXhSTHpYNXpaMGU3RWI4TEN4ZnNPeTFmSFNTRTRNQVNKX1VDREs1T1pkYldXZUgzVlgyaGwza0p5RFhHMG1EMmhsZkhTd09GMzVUckZXSlotVXlMX3dvV2hTdExiMDhnRzhYLVZDejViVlhjaDIzYVFhajdXT3pKRFhwWF8yYWszY0FkU1RuQ0hFVFBPNWgzczg1ajhnQnF5X2FKSmZR";
+                var req = new HttpRequestMessage(HttpMethod.Get, "https://apis.roblox.com/asset-delivery-api/v1/assetId/" + assetId.ToString());
+                req.Headers.Add("x-api-key", api_key);
+                var responseMessage = await client.SendAsync(req);
+                string downloadLink = await responseMessage.Content.ReadAsStringAsync();
+                response = JsonSerializer.Deserialize<DownloadLink>(downloadLink);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message :{0} ", e.Message);
+                return;
+            }
             // need to error check in case we get paywalled
             if (response.errors != null)
             {
